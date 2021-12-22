@@ -1,4 +1,8 @@
-pyvenv/
-*.o
+.cache
+CMakeFiles
+CMakeCache.txt
+build
+cmake_install.cmake
+pyvenv
 test
-*.obj
+compile_commands.json
