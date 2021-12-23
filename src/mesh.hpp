@@ -9,17 +9,23 @@ namespace polylower {
   
   class Vertex {
   public:
-    Vertex(): pos_x(0.0f), pos_y(0.0f), pos_z(0.0f) {}
-    Vertex(float pos_x, float pos_y, float pos_z):
+    Vertex(): pos_x(0.0), pos_y(0.0), pos_z(0.0) {}
+    Vertex(double pos_x, double pos_y, double pos_z):
       pos_x(pos_x), pos_y(pos_y), pos_z(pos_z) {}
-    float x() const { return this->pos_x; }
-    float y() const { return this->pos_y; }
-    float z() const { return this->pos_z; }
+    double x() const { return this->pos_x; }
+    double y() const { return this->pos_y; }
+    double z() const { return this->pos_z; }
+
+    
+    void set_x(double x) { this->pos_x = x; }
+    void set_y(double y) { this->pos_y = y; }
+    void set_z(double z) { this->pos_z = z; }
 
     Vertex operator-(const Vertex &subtrahend) const;
+    bool operator==(const Vertex &rhs) const;
 
   private:
-    float pos_x, pos_y, pos_z;
+    double pos_x, pos_y, pos_z;
   };
   
   class Mesh {
@@ -37,7 +43,13 @@ namespace polylower {
     
     vector<Vertex> get_vertices() const ;
     vector<vector<int>> get_faces() const ;
+
+    void triangulation();
   };
+
+  Vertex unit(const Vertex& v);
+  Vertex cross(const Vertex &u, const Vertex &v);
+  double dot(const Vertex &u, const Vertex &v);
 
 }
 

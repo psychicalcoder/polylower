@@ -6,3 +6,4 @@ cmake_install.cmake
 pyvenv
 test
 compile_commands.json
+.bash_history

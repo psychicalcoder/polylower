@@ -1,11 +1,16 @@
 #include "polylower.hpp"
+#include "mesh.hpp"
 #include <vector>
 #include <queue>
-#include <cmath>
 #include <list>
 #include <stdexcept>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/operators.h>
+#include <sstream>
 #define EPS 1e-6
 using namespace std;
+namespace py = pybind11;
 
 namespace polylower {
 
@@ -18,19 +23,7 @@ namespace polylower {
     NotSolvableException() : info("The linear system is not solvable") {}
     NotSolvableException(const char *info) : info(info) {}
   };
-
-  Vertex cross(const Vertex &u, const Vertex &v) {
-    double x = u.y() * v.z() - u.z() * v.y();
-    double y = u.z() * v.x() - u.x() * v.z();
-    double z = u.x() * v.y() - u.y() * v.x();
-    return Vertex(x, y, z);
-  }
-
-  Vertex unit(const Vertex &v) {
-    double len = sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
-    return Vertex(v.x() / len, v.y() / len, v.z() / len);
-  }
-
+ 
   vector<Mat4> calcQ(const Mesh &mesh) {
     vector<Mat4> Q(mesh.num_vertex()+1);
     vector<Mat4> faceQ(mesh.num_faces());
@@ -130,5 +123,25 @@ namespace polylower {
     
     return Mesh();
   }
-  
+
+} // namespace polylower
+
+PYBIND11_MODULE(polylower, m) {
+  m.doc() = "Polylower";
+  m.def("unit", &polylower::unit, "return an unit vector");
+  m.def("dot", &polylower::dot, "dot product");
+  m.def("cross", &polylower::cross, "cross product");
+  py::class_<polylower::Vertex>(m, "Vertex")
+    .def(py::init<>())
+    .def(py::init<double, double, double>())
+    .def_property("x", &polylower::Vertex::x, &polylower::Vertex::set_x)
+    .def_property("y", &polylower::Vertex::y, &polylower::Vertex::set_y)
+    .def_property("z", &polylower::Vertex::z, &polylower::Vertex::set_z)
+    .def("__repr__", [](const polylower::Vertex &v) {
+      std::stringstream ss;
+      ss << "<polylower.Vertex (" << v.x() << ", " << v.y() << ", " << v.z() << ")>";
+      return ss.str();
+    })
+    .def(py::self - py::self)
+    .def(py::self == py::self);
 }
