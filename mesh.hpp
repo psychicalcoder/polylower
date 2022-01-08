@@ -17,7 +17,7 @@ struct edge {
   edge(int u, int v, double cost, const vec &target, int time_stamp)
     : u(u), v(v), cost(cost), target(target), time_stamp(time_stamp) {}
   bool operator<(const edge &rhs) const {
-    return cost < rhs.cost;
+    return cost > rhs.cost;
   }
 };
 
@@ -34,17 +34,17 @@ private:
   priority_queue<edge> edges;
   void initQ();
   double calcCost(const vec& target, const Mat4 &q);
-  bool faceflip(const vec& target, int u, int v);
+  bool faceflip(const vec& target, int u, int v) const ;
   void selectEdges();
   void addedge(int u, int v, int timestamp);
   bool is_edge_valid(const edge &e) const;
-  void remove_vertex(int v);
   void refresh();
   
 public:
   Mesh() {}
   ~Mesh() {}
   void simplify(double rate);
+  void aggregation(int epoch);
   void load(const string &filename);
   void dump(const string &filename);
 };

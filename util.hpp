@@ -41,7 +41,7 @@ struct Mat4 {
   Mat4 operator+(const Mat4 &rhs) const {
     Mat4 n;
     for (int i = 0; i < 16; i++) {
-      m[i] = rhs.m[i];
+      n.m[i] = m[i] + rhs.m[i];
     }
     return n;
   }
